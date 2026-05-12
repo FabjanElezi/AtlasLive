@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic'
 import type { Place } from '@/types'
+import type { User } from '@supabase/supabase-js'
 
 const MapView = dynamic(
   () => import('./MapView').then((m) => m.MapView),
@@ -15,6 +16,11 @@ const MapView = dynamic(
   }
 )
 
-export function MapClient({ places }: { places: Place[] }) {
-  return <MapView places={places} />
+interface MapClientProps {
+  places: Place[]
+  user: User | null
+}
+
+export function MapClient({ places, user }: MapClientProps) {
+  return <MapView places={places} user={user} />
 }
