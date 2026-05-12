@@ -1,6 +1,7 @@
 'use client'
 
 import dynamic from 'next/dynamic'
+import type { Place } from '@/types'
 
 const MapView = dynamic(
   () => import('./MapView').then((m) => m.MapView),
@@ -14,6 +15,6 @@ const MapView = dynamic(
   }
 )
 
-export function MapClient() {
-  return <MapView />
+export function MapClient({ places }: { places: Place[] }) {
+  return <MapView places={places} />
 }
