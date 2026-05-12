@@ -4,7 +4,9 @@ import 'leaflet/dist/leaflet.css'
 import { useState } from 'react'
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import L from 'leaflet'
+import type { User } from '@supabase/supabase-js'
 import { CategoryFilter } from './CategoryFilter'
+import { UserMenu } from '@/components/auth/UserMenu'
 import type { Place, PlaceCategory } from '@/types'
 
 const ALBANIA_CENTER: [number, number] = [41.1533, 20.1683]
@@ -31,9 +33,10 @@ function createCategoryIcon(category: PlaceCategory) {
 
 interface MapViewProps {
   places: Place[]
+  user: User | null
 }
 
-export function MapView({ places }: MapViewProps) {
+export function MapView({ places, user }: MapViewProps) {
   const [activeCategory, setActiveCategory] = useState<PlaceCategory | 'all'>('all')
 
   const visiblePlaces =
@@ -43,8 +46,14 @@ export function MapView({ places }: MapViewProps) {
 
   return (
     <div className="relative flex-1 w-full">
+      {/* Category filter — top center */}
       <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] px-4 w-full max-w-xl">
         <CategoryFilter active={activeCategory} onChange={setActiveCategory} />
+      </div>
+
+      {/* User menu — top right */}
+      <div className="absolute top-4 right-4 z-[1000]">
+        <UserMenu user={user} />
       </div>
 
       <MapContainer
