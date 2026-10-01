@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AtlasLive
 
-## Getting Started
+Live map of beaches, restaurants, hotels, attractions and nightlife, where signed-in users post real-time reports on crowd level, parking and sea conditions. Full-stack Next.js on Supabase.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Interactive Leaflet map with category filter (beach, restaurant, hotel, attraction, nightlife, service)
+- Places and live reports stored in Supabase Postgres
+- Live reports: crowd level, parking status and sea condition per place
+- Supabase Auth with sign-up, login and session middleware protecting routes
+- Row Level Security on every table: public read, authenticated write, users can only edit or delete their own data
+- Profile row created automatically for each new user via a database trigger
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Data model
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+`supabase/schema.sql` defines:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Table | Purpose |
+|---|---|
+| `profiles` | Extends `auth.users` with display name and avatar |
+| `places` | Map destinations: name, category, coordinates, address |
+| `live_reports` | Time-stamped user reports per place |
 
-## Learn More
+Enums constrain categories, crowd levels, parking status and sea conditions. Indexes cover category filtering and per-place, newest-first report lookups.
 
-To learn more about Next.js, take a look at the following resources:
+## Stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Next.js 16 (App Router) · React 19 · TypeScript · Supabase (Postgres, Auth, RLS) · Leaflet / react-leaflet · Tailwind CSS 4
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Run locally
 
-## Deploy on Vercel
+1. Create a Supabase project and run `supabase/schema.sql` in the SQL editor.
+2. Create `.env.local`:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```env
+   NEXT_PUBLIC_SUPABASE_URL=your-project-url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3. Install and start:
+
+   ```bash
+   npm install
+   npm run dev
+   ```
+
+Open http://localhost:3000.
